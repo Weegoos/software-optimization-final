@@ -1,11 +1,10 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+// app.module.ts
+import { Module, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { SequelizeModule } from '@nestjs/sequelize';
+import { SequelizeModule, InjectConnection } from '@nestjs/sequelize';
+import { Sequelize } from 'sequelize-typescript';
 import { UsersModule } from './users/user.module';
 import { User } from './users/user.model';
-import { Sequelize } from 'sequelize-typescript';
 
 @Module({
   imports: [
@@ -14,42 +13,32 @@ import { Sequelize } from 'sequelize-typescript';
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
-        // Создаём "чистый" экземпляр Sequelize для проверки подключения
-        const sequelize = new Sequelize({
-          dialect: 'postgres',
-          host: configService.get<string>('DB_HOST'),
-          username: configService.get<string>('DB_USER'),
-          password: configService.get<string>('DB_PASS'),
-          database: configService.get<string>('DB_NAME'),
-          models: [User], // только допустимые поля
-        });
-
-        try {
-          await sequelize.authenticate();
-          console.log('✅ Database connected successfully');
-        } catch (err) {
-          console.error('❌ Database connection error:', err);
-          throw err;
-        }
-
-        // Возвращаем конфигурацию для Nest/SequelizeModule
-        return {
-          dialect: 'postgres',
-          host: configService.get<string>('DB_HOST'),
-          username: configService.get<string>('DB_USER'),
-          password: configService.get<string>('DB_PASS'),
-          database: configService.get<string>('DB_NAME'),
-          models: [User],
-          autoLoadModels: true, // Nest option, можно включить
-          synchronize: true,    // Nest option
-        };
-      },
+      useFactory: (configService: ConfigService) => ({
+        dialect: 'postgres',
+        host: configService.get<string>('DB_HOST'),
+        username: configService.get<string>('DB_USER'),
+        password: configService.get<string>('DB_PASS'),
+        database: configService.get<string>('DB_NAME'),
+        models: [User],
+        autoLoadModels: true,
+        synchronize: true,
+        logging: console.log,
+      }),
     }),
 
     UsersModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements OnApplicationBootstrap {
+  constructor(@InjectConnection() private readonly sequelize: Sequelize) {}
+
+  async onApplicationBootstrap() {
+    try {
+      await this.sequelize.authenticate();
+      console.log('✅ Database connected successfully');
+    } catch (err) {
+      console.error('❌ Database connection error:', err.message);
+      process.exit(1);
+    }
+  }
+}

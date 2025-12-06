@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
+import { InjectModel, InjectConnection } from '@nestjs/sequelize';
 import { User } from './user.model';
-import { Sequelize, QueryTypes } from 'sequelize';
+import { Sequelize } from 'sequelize-typescript';
+import { QueryTypes } from 'sequelize';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User)
     private readonly userModel: typeof User,
+
+    @InjectConnection()
     private readonly sequelize: Sequelize,
   ) {}
 
@@ -17,8 +20,6 @@ export class UsersService {
       { type: QueryTypes.SELECT },
     );
 
-    return {
-      users,
-    };
+    return { users, message: 'The SQL Injection has detected' };
   }
 }
