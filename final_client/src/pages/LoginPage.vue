@@ -6,7 +6,7 @@
           class="flex justify-center text-bold font-medium p-[16px]"
           :class="$q.screen.width < mobileWidth ? 'text-xl' : 'text-2xl'"
         >
-          Create your account
+          Sign in to your account
         </p>
       </div>
       <q-card
@@ -15,23 +15,7 @@
         bordered
       >
         <q-card-section>
-          <q-form @submit="register" @mainButton="register" @moveButton="router.push('/login')">
-            <q-input
-              placeholder="First Name"
-              dense
-              outlined
-              v-model="firstName"
-              class="q-mt-sm"
-              type="text"
-            />
-            <q-input
-              placeholder="Last Name"
-              dense
-              outlined
-              v-model="lastName"
-              class="q-mt-sm"
-              type="text"
-            />
+          <q-form @submit="login" @mainButton="login" @moveButton="router.push('/registration')">
             <q-input
               placeholder="Email address"
               dense
@@ -61,15 +45,15 @@
             class="q-mt-md w-full text-[12px]"
             color="black"
             no-caps
-            label="Register"
-            @click="register"
+            label="Sign in"
+            @click="login"
           />
           <q-btn
             class="q-mt-md w-full text-[12px]"
             color="black"
             no-caps
-            label="Do you have an account? Log in"
-            @click="router.push('/login')"
+            label="Do not have an account? Create here"
+            @click="router.push('/registration')"
           />
         </q-card-section>
       </q-card>
@@ -86,11 +70,9 @@ import { mobileWidth } from 'src/boot/config'
 const $q = useQuasar()
 const router = useRouter()
 
-const firstName = ref('')
-const lastName = ref('')
 const password = ref('')
 const email = ref('')
 const isPwd = ref(true)
 
-const register = () => {}
+const login = () => {}
 </script>
