@@ -81,7 +81,9 @@
 import { ref } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
-import { mobileWidth } from 'src/boot/config'
+import { mobileWidth, serverURL } from 'src/boot/config'
+import axios from 'axios'
+import { errorMessage } from 'src/composables/notify/errorMessage'
 // global variables
 const $q = useQuasar()
 const router = useRouter()
@@ -92,5 +94,19 @@ const password = ref('')
 const email = ref('')
 const isPwd = ref(true)
 
-const register = () => {}
+const register = async () => {
+  try {
+    const response = await axios.post(`${serverURL}users/weak_register`, {
+      firstName: firstName.value,
+      lastName: lastName.value,
+      email: email.value,
+      password: password.value,
+      role: 'user',
+    })
+    console.log(response.data)
+  } catch (error) {
+    console.log(error)
+    errorMessage($q, error.response.data.message)
+  }
+}
 </script>
