@@ -24,4 +24,9 @@ export class CreateUserDto {
     description: 'password for registration',
   })
   password: string;
+  @ApiProperty({
+    example: 'user',
+    description: 'role of the user',
+  })
+  role: 'user' | 'admin';
 }

@@ -38,6 +38,7 @@ export class UsersService {
       firstName: user.firstName,
       lastName: user.lastName,
       password: user.password,
+      role: user.role,
     } as any);
 
     return { user: createdUser };
