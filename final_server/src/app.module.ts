@@ -21,7 +21,7 @@ import { User } from './users/user.model';
         database: configService.get<string>('DB_NAME'),
         models: [User],
         autoLoadModels: true,
-        synchronize: true,
+        synchronize: false,
         logging: console.log,
       }),
     }),
