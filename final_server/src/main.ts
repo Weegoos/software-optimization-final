@@ -21,7 +21,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:9000',
       'http://localhost:9001',
-      'https://weak-version.netlify.app/',
+      'https://weak-version.netlify.app',
     ],
     credentials: true,
   });
