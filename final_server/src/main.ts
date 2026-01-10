@@ -18,7 +18,11 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   app.enableCors({
-    origin: ['http://localhost:9000', 'http://localhost:9001'],
+    origin: [
+      'http://localhost:9000',
+      'http://localhost:9001',
+      'https://weak-version.netlify.app/',
+    ],
     credentials: true,
   });
 
