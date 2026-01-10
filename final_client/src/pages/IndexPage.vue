@@ -9,24 +9,24 @@
 </template>
 
 <script setup>
-import { Cookies } from 'quasar'
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+// import { Cookies } from 'quasar'
+// import { onMounted } from 'vue'
+// import { useRouter } from 'vue-router'
 
-const router = useRouter()
+// const router = useRouter()
 
-const getUserInformation = async () => {
-  try {
-    const access_token = Cookies.get('access_token')
-    if (!access_token) {
-      router.push('/registration')
-    }
-  } catch (error) {
-    console.log(error)
-  }
-}
+// const getUserInformation = async () => {
+//   try {
+//     const access_token = Cookies.get('access_token')
+//     if (!access_token) {
+//       router.push('/registration')
+//     }
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
 
-onMounted(() => {
-  getUserInformation()
-})
+// onMounted(() => {
+//   getUserInformation()
+// })
 </script>
