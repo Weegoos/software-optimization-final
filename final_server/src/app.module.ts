@@ -5,6 +5,7 @@ import { SequelizeModule, InjectConnection } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { UsersModule } from './users/user.module';
 import { User } from './users/user.model';
+import { ItemsModule } from './items/item.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { User } from './users/user.model';
     }),
 
     UsersModule,
+    ItemsModule,
   ],
 })
 export class AppModule implements OnApplicationBootstrap {
