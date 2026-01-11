@@ -21,7 +21,11 @@ export class ItemsService {
 
   async weak_find_all(): Promise<Item[]> {
     return this.itemModel.findAll({
-        order: [['updatedAt', 'DESC']],
+      order: [['updatedAt', 'DESC']],
     });
+  }
+
+  async destroy(id: number): Promise<void> {
+    await this.itemModel.destroy({ where: { id } });
   }
 }
