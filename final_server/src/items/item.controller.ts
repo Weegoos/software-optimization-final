@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ItemsService } from './item.service';
 import { CreateItemDTO } from './dto/item-create.dto';
@@ -25,5 +25,15 @@ export class ItemsController {
     };
     const newItem = await this.itemsService.weak_create(item);
     return newItem;
+  }
+
+  @Get('weak_find_all')
+  @ApiOperation({ summary: 'Get all items' })
+  @ApiResponse({
+    status: 200,
+    description: 'Items retrieved successfully',
+  })
+  async weakFindAll() {
+    return this.itemsService.weak_find_all();
   }
 }

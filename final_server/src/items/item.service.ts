@@ -18,4 +18,10 @@ export class ItemsService {
 
     return createdItem;
   }
+
+  async weak_find_all(): Promise<Item[]> {
+    return this.itemModel.findAll({
+        order: [['updatedAt', 'DESC']],
+    });
+  }
 }
