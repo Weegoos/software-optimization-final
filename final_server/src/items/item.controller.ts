@@ -28,9 +28,10 @@ export class ItemsController {
     description: 'Bad request — invalid data',
   })
   async weakCreate(@Body() createItemDTO: CreateItemDTO) {
+    console.log('BODY DTO:', createItemDTO);
     const item = {
-      name: createItemDTO.name,
-      price: createItemDTO.price,
+      name: createItemDTO?.name,
+      price: createItemDTO?.price,
     };
     const newItem = await this.itemsService.weak_create(item);
     return newItem;
