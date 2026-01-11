@@ -28,4 +28,22 @@ export class ItemsService {
   async destroy(id: number): Promise<void> {
     await this.itemModel.destroy({ where: { id } });
   }
+  
+  async patch(id: number, item: Partial<CreateItemDTO>): Promise<Item> {
+    const existingItem = await this.itemModel.findByPk(id);
+    if (!existingItem) {
+      throw new Error('Item not found');
+    }
+
+    if (item.name !== undefined) {
+      existingItem.name = item.name;
+    }
+
+    if (item.price !== undefined) {
+      existingItem.price = item.price;
+    }
+
+    await existingItem.save();
+    return existingItem;
+  }
 }

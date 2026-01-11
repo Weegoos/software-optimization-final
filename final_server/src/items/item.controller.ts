@@ -1,7 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ItemsService } from './item.service';
 import { CreateItemDTO } from './dto/item-create.dto';
+import { UpdateItemDTO } from './dto/update-item.dto';
 
 @ApiTags('items')
 @Controller('items')
@@ -46,5 +55,16 @@ export class ItemsController {
   async destroy(@Param('id') id: number) {
     await this.itemsService.destroy(id);
     return { message: 'Item deleted successfully' };
+  }
+
+  @Patch('weak_patch/:id')
+  @ApiOperation({ summary: 'Update an item by ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Item updated successfully',
+  })
+  async patch(@Param('id') id: string, @Body() item: UpdateItemDTO) {
+    const updatedItem = await this.itemsService.patch(+id, item);
+    return updatedItem;
   }
 }
