@@ -27,7 +27,7 @@ async function bootstrap() {
   });
 
   const sequelize = app.get(Sequelize);
-  await sequelize.sync({ force: true });
+  await sequelize.sync({ force: false });
 
   await app.listen(3000);
   console.log('🚀 Swagger UI available at http://localhost:3000/api');
