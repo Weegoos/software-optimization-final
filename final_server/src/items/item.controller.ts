@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ItemsService } from './item.service';
 import { CreateItemDTO } from './dto/item-create.dto';
@@ -35,5 +35,16 @@ export class ItemsController {
   })
   async weakFindAll() {
     return this.itemsService.weak_find_all();
+  }
+
+  @Delete('weak_destroy/:id')
+  @ApiOperation({ summary: 'Delete an item by ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Item deleted successfully',
+  })
+  async destroy(@Param('id') id: number) {
+    await this.itemsService.destroy(id);
+    return { message: 'Item deleted successfully' };
   }
 }
