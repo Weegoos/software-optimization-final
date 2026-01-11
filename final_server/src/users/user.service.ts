@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/sequelize';
 import { User } from './user.model';
 import { Sequelize } from 'sequelize-typescript';
-import { CreationAttributes, QueryTypes } from 'sequelize';
+import { QueryTypes } from 'sequelize';
 import { IUser } from './interface/user.interface';
 
 @Injectable()
