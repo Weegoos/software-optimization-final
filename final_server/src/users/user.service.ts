@@ -14,14 +14,37 @@ export class UsersService {
     @InjectConnection()
     private readonly sequelize: Sequelize,
   ) {}
+  async weakAuth(email: string, password: string) {
+    if (
+      typeof email !== 'string' ||
+      email.length < 3 ||
+      email.length > 254 ||
+      !/^[a-zA-Z0-9._-]{2,}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
+    ) {
+      throw new BadRequestException('Invalid email format');
+    }
 
-  async weakAuth(email: string) {
+    if (
+      typeof password !== 'string' ||
+      password.length < 6 ||
+      password.length > 128
+    ) {
+      throw new BadRequestException('Invalid password format');
+    }
+
     const users = await this.sequelize.query(
-      `SELECT * FROM users WHERE email = '${email}'`,
-      { type: QueryTypes.SELECT },
+      `SELECT * FROM users WHERE email = :email AND password = :password`,
+      {
+        replacements: { email, password },
+        type: QueryTypes.SELECT,
+      },
     );
 
-    return { users, message: 'The SQL Injection has detected' };
+    if (!users.length) {
+      throw new BadRequestException('Invalid email or password');
+    }
+
+    return { users, message: 'Login success' };
   }
 
   async weakCreate(user: IUser): Promise<{ user: User }> {

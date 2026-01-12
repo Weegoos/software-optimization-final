@@ -69,6 +69,7 @@ import { mobileWidth } from 'src/boot/config'
 import { serverURL } from 'src/boot/config'
 import axios from 'axios'
 import { errorMessage } from 'src/composables/notify/errorMessage'
+import { successMessage } from 'src/composables/notify/successMessage'
 // global variables
 const $q = useQuasar()
 const router = useRouter()
@@ -83,11 +84,18 @@ const login = async () => {
       email: email.value,
       password: password.value,
     })
+
     console.log(response.data)
-    errorMessage($q, response.data.message)
-    router.push('/')
+
+
+    if (response.data.users?.length > 0) {
+      router.push('/')
+    }
+    successMessage($q, 'Login successful!')
   } catch (error) {
     console.error(error)
+     errorMessage($q, error.response.data.message || 'An error occurred during login.')
   }
 }
+
 </script>

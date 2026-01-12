@@ -30,7 +30,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Login user and return JWT token' })
   @ApiResponse({ status: 200, description: 'User logged in successfully' })
   async login(@Body() body: LoginUserDto) {
-    const { email } = body;
-    return this.userService.weakAuth(email);
+    const { email, password } = body;
+    return this.userService.weakAuth(email, password);
   }
 }
