@@ -8,6 +8,7 @@ export async function getMethod(serverURL, url, $q) {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
+        Authorization: `Bearer ${Cookies.get('access_token')}`,
       },
       withCredentials: true,
     })

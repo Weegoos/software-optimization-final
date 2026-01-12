@@ -1,6 +1,7 @@
 // src/composables/api-method/patch.js
 import axios from 'axios'
 import { successMessage } from '../notify/successMessage'
+import { Cookies } from 'quasar'
 
 export async function patchMethod(
   serverURL,
@@ -14,6 +15,7 @@ export async function patchMethod(
     const headers = {
       'Content-Type': 'application/json',
       Accept: 'application/json',
+      Authorization: `Bearer ${Cookies.get('access_token')}`,
     }
 
     const config = {

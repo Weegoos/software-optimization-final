@@ -1,11 +1,12 @@
 import axios from 'axios'
-
+import { Cookies } from 'quasar'
 export async function deleteMethod(serverURL, url, id) {
   try {
     const response = await axios.delete(`${serverURL}${url}/${id}`, {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
+        Authorization: `Bearer ${Cookies.get('access_token')}`,
       },
     })
     return response.data

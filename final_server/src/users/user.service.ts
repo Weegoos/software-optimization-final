@@ -1,15 +1,16 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/sequelize';
 import { User } from './user.model';
 import { Sequelize } from 'sequelize-typescript';
 import { QueryTypes } from 'sequelize';
 import { IUser } from './interface/user.interface';
-
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User)
     private readonly userModel: typeof User,
+    private readonly jwtService: JwtService,
 
     @InjectConnection()
     private readonly sequelize: Sequelize,
@@ -32,19 +33,25 @@ export class UsersService {
       throw new BadRequestException('Invalid password format');
     }
 
-    const users = await this.sequelize.query(
-      `SELECT * FROM users WHERE email = :email AND password = :password`,
-      {
-        replacements: { email, password },
-        type: QueryTypes.SELECT,
-      },
-    );
+    const user = await this.userModel.findOne({
+      where: { email, password },
+    });
 
-    if (!users.length) {
+    if (!user) {
       throw new BadRequestException('Invalid email or password');
     }
 
-    return { users, message: 'Login success' };
+    const payload = {
+      id: user.dataValues.id,
+      email: user.dataValues.email,
+      role: user.dataValues.role,
+      firstName: user.dataValues.firstName,
+      lastName: user.dataValues.lastName,
+    };
+
+    const token = this.jwtService.sign(payload);
+
+    return { message: 'Login success', token };
   }
 
   async weakCreate(user: IUser): Promise<{ user: User }> {
@@ -65,5 +72,13 @@ export class UsersService {
     } as any);
 
     return { user: createdUser };
+  }
+
+  async findById(id: number): Promise<User> {
+    const user = await this.userModel.findByPk(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
   }
 }

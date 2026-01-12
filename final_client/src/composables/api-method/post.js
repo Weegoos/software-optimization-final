@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { errorMessage } from '../notify/errorMessage'
 import { successMessage } from '../notify/successMessage'
+import { Cookies } from 'quasar'
 
 export async function postMethod(serverURL, url, data, $q, successMsg) {
   try {
@@ -8,6 +9,7 @@ export async function postMethod(serverURL, url, data, $q, successMsg) {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
+        Authorization: `Bearer ${Cookies.get('access_token')}`,
       },
     })
     successMessage($q, successMsg)

@@ -63,7 +63,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useQuasar } from 'quasar'
+import { Cookies, useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 import { mobileWidth } from 'src/boot/config'
 import { serverURL } from 'src/boot/config'
@@ -85,17 +85,14 @@ const login = async () => {
       password: password.value,
     })
 
-    console.log(response.data)
+    console.log(response.data.token)
 
-
-    if (response.data.users?.length > 0) {
-      router.push('/')
-      successMessage($q, 'Login successful!')
-    }
+    Cookies.set('access_token', response.data.token)
+    router.push('/')
+    successMessage($q, 'Login successful!')
   } catch (error) {
     console.error(error)
-     errorMessage($q, error.response.data.message || 'An error occurred during login.')
+    errorMessage($q, error.response.data.message || 'An error occurred during login.')
   }
 }
-
 </script>
