@@ -90,8 +90,8 @@ const login = async () => {
 
     if (response.data.users?.length > 0) {
       router.push('/')
+      successMessage($q, 'Login successful!')
     }
-    successMessage($q, 'Login successful!')
   } catch (error) {
     console.error(error)
      errorMessage($q, error.response.data.message || 'An error occurred during login.')
