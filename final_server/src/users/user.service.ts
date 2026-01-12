@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/sequelize';
 import { User } from './user.model';
 import { Sequelize } from 'sequelize-typescript';
@@ -16,37 +20,44 @@ export class UsersService {
     private readonly sequelize: Sequelize,
   ) {}
   async weakAuth(email: string, password: string) {
-    if (
-      typeof email !== 'string' ||
-      email.length < 3 ||
-      email.length > 254 ||
-      !/^[a-zA-Z0-9._-]{2,}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
-    ) {
+    // Валидация оставлена, но она НЕ спасает от SQLi,
+    // потому что ввод всё равно вставляется в SQL-строку
+    if (typeof email !== 'string' || email.length < 3 || email.length > 254) {
       throw new BadRequestException('Invalid email format');
     }
 
     if (
       typeof password !== 'string' ||
-      password.length < 6 ||
+      password.length < 1 ||
       password.length > 128
     ) {
       throw new BadRequestException('Invalid password format');
     }
 
-    const user = await this.userModel.findOne({
-      where: { email, password },
-    });
+    // ❌ КЛАССИЧЕСКАЯ ОШИБКА: конкатенация строк
+    const sql = `
+    SELECT *
+    FROM users
+    WHERE email = '${email}'
+      AND password = '${password}'
+    LIMIT 1
+  `;
 
-    if (!user) {
+    // sequelize.query / connection.query / manager.query — не важно
+    const [rows]: any = await this.sequelize.query(sql);
+
+    if (!rows || rows.length === 0) {
       throw new BadRequestException('Invalid email or password');
     }
 
+    const user = rows[0];
+
     const payload = {
-      id: user.dataValues.id,
-      email: user.dataValues.email,
-      role: user.dataValues.role,
-      firstName: user.dataValues.firstName,
-      lastName: user.dataValues.lastName,
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName,
     };
 
     const token = this.jwtService.sign(payload);
